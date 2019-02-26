@@ -1,0 +1,22 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  labels:
+    app: {{ template "mongodb-replicaset.name" . }}
+    chart: {{ template "mongodb-replicaset.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "mongodb-replicaset.fullname" . }}
+  annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - http:
+        paths:
+          - path: {{.Values.ingress.path }}
+            backend:
+              servicePort: {{ .Values.port }}
+              serviceName: {{ template "mongodb-replicaset.fullname" .}}-client
+
+{{- end }}
